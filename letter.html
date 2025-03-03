@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Letter</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cookie&family=Sacramento&family=Poppins:wght@300&family=Quicksand:wght@500&display=swap');
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #FFB6C1, #FF69B4, #FF1493, #FFD700);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            overflow-y: auto;
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+        }
+
+        .container.fade-out {
+            transform: translateY(-100vh) rotate3d(1, 1, 0, 45deg);
+            opacity: 0;
+        }
+
+        .letter {
+            font-size: 28px;
+            line-height: 1.8;
+            font-family: 'Cookie', cursive;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            white-space: pre-wrap;
+            margin-bottom: 50px;
+            min-height: 300px;
+        }
+
+        .signature {
+            font-family: 'Sacramento', cursive;
+            font-size: 36px;
+            color: white;
+            text-align: right;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .signature.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .next-button {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            padding: 15px 40px;
+            font-size: 24px;
+            font-family: 'Sacramento', cursive;
+            background: linear-gradient(45deg, #FF6F61, #FFABAB);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.5s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .next-button.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .next-button:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <audio id="bg-music" loop>
+        <source src="your-song.mp3" type="audio/mp3">
+    </audio>
+    
+    <div class="container">
+        <div class="letter"></div>
+        <div class="signature"></div>
+    </div>
+
+    <script>
+        const loveLetter = `Hey Cutie,
+
+Hey my little superstar! 🌟 I just wanted to say how proud I am of you for doing your best in the exam! You really gave it your all, and that's what matters most. Don't stress about it, next time you'll do even better, I know it! Keep up the great work, and remember, you've got this! 💪📚"
+
+
+With all my heart, 
+Forever Friends.`;
+
+        const signature = "❤️ Your Well Wisher ❤️";
+        const letter = document.querySelector('.letter');
+        const signatureElement = document.querySelector('.signature');
+        const nextButton = document.querySelector('.next-button');
+        let letterIndex = 0;
+
+        function writeLetter() {
+            if (letterIndex < loveLetter.length) {
+                letter.textContent = loveLetter.substring(0, letterIndex + 1);
+                letterIndex++;
+                let delay = /[,.!]/.test(loveLetter[letterIndex - 1]) ? 400 : 50;
+                if (/\n/.test(loveLetter[letterIndex - 1])) delay = 800;
+                setTimeout(writeLetter, delay);
+            } else {
+                setTimeout(() => {
+                    signatureElement.textContent = signature;
+                    signatureElement.classList.add('show');
+                    setTimeout(() => nextButton.classList.add('show'), 1000);
+                }, 500);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let audio = document.getElementById("bg-music");
+            if (sessionStorage.getItem("musicTime")) {
+                audio.currentTime = parseFloat(sessionStorage.getItem("musicTime"));
+            }
+            audio.play().catch(error => console.log("Auto-play blocked:", error));
+            setInterval(() => sessionStorage.setItem("musicTime", audio.currentTime), 1000);
+        });
+
+        setTimeout(writeLetter, 1000);
+
+        nextButton.addEventListener('click', () => {
+            document.querySelector('.container').classList.add('fade-out');
+            setTimeout(() => window.location.href = 'love.html', 2000);
+        });
+    </script>
+</body>
+</html>
